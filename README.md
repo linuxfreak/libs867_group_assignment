@@ -33,7 +33,7 @@ NOTE: *This database instance will only be available for the lifespan of the cou
 The complete SQL script required to rebuild the database and the source file for this documentation has been committed a public github repository and can be accessed here:
 
 ```
-https://github.com/linuxfreak/ABU----LIBS-867-Group-Assignment.git
+https://github.com/linuxfreak/libs867_group_assignment.git
 ```
 
 ---
@@ -45,7 +45,7 @@ https://github.com/linuxfreak/ABU----LIBS-867-Group-Assignment.git
 
 The Library Index System is designed to manage operations across multiple library branches, with a focus on Nigerian and African literature. The system provides:
 
-- **Multi-branch inventory management** across 13 branches in Lagos, Abuja, Kano, Port Harcourt, and Ibadan
+- **Multi-branch inventory management** across multiple branches in Lagos, Abuja, Kano, Port Harcourt, and Ibadan
 - **Subject-based classification** supporting hierarchical categorisation
 - **Comprehensive circulation tracking** with automated fine calculation
 - **Integrated payment processing** for membership fees and fines
@@ -1136,31 +1136,6 @@ VALUES (1, 1, 1, '2024-11-20', '2024-11-15');
 ```
 **Expected**: ERROR 3819 - Check constraint 'chk_due_date' violated
 
-### 8.3 Performance Benchmarks
-
-#### 8.3.1 Query Execution Time Targets
-
-| Query Type | Target | Actual (68 book_copy records) |
-|------------|--------|-------------------------------|
-| Simple book search by title | < 10ms | ~2ms |
-| Author search with books | < 20ms | ~5ms |
-| Availability check across branches | < 30ms | ~8ms |
-| Member loan history | < 50ms | ~12ms |
-| Overdue report generation | < 100ms | ~25ms |
-
-**Note**: Timings based on test dataset; production performance depends on dataset size and hardware.
-
-#### 8.3.2 Scalability Projections
-
-**Current Dataset**: 68 book copies; 34 loans; 30 members  
-**Projected Growth**: > 10,000 copies; > 5,000 active loans; > 2,000 members
-
-**Scaling Considerations**:
-- Indexes remain effective up to ~100K records per table
-- Partition loan table by year for historical data (future enhancement)
-- Consider read replicas for reporting queries at scale
-- Archive old loans to maintain performance
-
 ---
 <div style="page-break-after: always;"></div>
 
@@ -1212,15 +1187,15 @@ This library index system successfully addresses the core requirements of multi-
 
 **Robust Data Model**:
 - 17 interconnected tables supporting comprehensive library operations
-- Normalized schema (3NF) ensuring data integrity and minimizing redundancy
-- Hierarchical subject taxonomy enabling flexible cataloging
+- Normalised schema (3NF) ensuring data integrity and minimising redundancy
+- Hierarchical subject organisation enabling flexible cataloging
 - Unified payment architecture supporting diverse transaction types
 
-**Nigerian Context Integration**:
+**Context Integration**:
 - Culturally relevant membership types and payment methods
 - Support for Nigerian literature classification
-- Localized address and phone number formats
-- Multi-branch architecture matching Nigerian library networks
+- Localised address and phone number formats
+- Multi-branch architecture 
 
 **Scalability & Performance**:
 - Strategic indexing for common query patterns
@@ -1237,13 +1212,9 @@ This library index system successfully addresses the core requirements of multi-
 ### 10.2 Key Design Strengths
 
 1. **Separation of Concerns**: Clear boundaries between catalog (book), inventory (book_copy), and circulation (loan) enable independent lifecycle management
-
 2. **Extensibility**: Self-referencing subject table, JSON columns for metadata, and modular payment architecture support future feature additions without schema restructuring
-
 3. **Data Quality**: Comprehensive constraints (CHECK, UNIQUE, FOREIGN KEY) and validation rules prevent invalid data entry
-
 4. **Audit Capability**: Timestamps on all tables, soft deletion flags, and detailed transaction logging support accountability and debugging
-
 5. **Query Optimization**: Composite indexes, FULLTEXT search, and normalized structure balance read and write performance
 
 ### 10.3 Limitations & Trade-offs
@@ -1280,17 +1251,15 @@ This library index system successfully addresses the core requirements of multi-
 
 ### 10.6 Final Remarks
 
-This database design represents a production-ready foundation for library network operations. The schema balances academic rigor (normalisation, constraints) with practical considerations (performance, maintainability). 
+This database design represents a production-ready foundation for library network operations. We have attempted balance academic rigor *(normalisation, constraints)* with practical considerations *(performance, maintainability).* 
 
-The modular architecture supports incremental enhancement - digital resources, reservation systems, and advanced analytics can be added without disrupting existing operations. The Nigerian-specific adaptations demonstrate the importance of contextual database design beyond generic patterns.
+The modular architecture supports incremental enhancement - digital resources, reservation systems, and advanced analytics can be added without disrupting existing operations.
 
-Future work should prioritize:
+Future work should prioritise:
 1. Implementation of proposed triggers for business logic automation
 2. Integration with external APIs for catalog enrichment
 3. Mobile application development leveraging the RESTful API layer
 4. Advanced analytics for collection development decisions
-
-The system successfully demonstrates how thoughtful database design bridges business requirements, technical constraints, and cultural context to create meaningful, maintainable information systems.
 
 ---
 <div style="page-break-after: always;"></div>
@@ -1301,48 +1270,5 @@ The system successfully demonstrates how thoughtful database design bridges busi
 2. Wikipedia: ISBN Format: https://en.wikipedia.org/wiki/ISBN
 3. Database Third Norma Form (Normalisation): https://en.wikipedia.org/wiki/Third_normal_form
 4. 
-
----
-<div style="page-break-after: always;"></div>
-
-## Appendix A: Table Relationships Matrix
-
-| Table | Related Tables | Relationship Type | Cardinality |
-|-------|---------------|-------------------|-------------|
-| publisher | book | One-to-Many | 1:N |
-| author | book_author → book | Many-to-Many | M:N |
-| book | book_copy, book_author, book_subject | One-to-Many, Many-to-Many | 1:N, M:N |
-| subject | book_subject → book, subject (self) | Many-to-Many, Hierarchical | M:N, 1:N |
-| branch | book_copy, member, loan | One-to-Many | 1:N |
-| book_copy | loan | One-to-Many | 1:N |
-| member | loan, payment | One-to-Many | 1:N |
-| loan | payment, fine_payment | One-to-One (optional) | 1:1 |
-| payment | membership_payment, fine_payment, payment_receipt | One-to-One | 1:1 |
-
-## Appendix B: Index Reference
-
-| Table | Index Name | Columns | Type | Purpose |
-|-------|-----------|---------|------|---------|
-| book | idx_book_title | title | B-tree | Search by title |
-| book | idx_book_fulltext | title, subtitle, description | FULLTEXT | Natural language search |
-| author | idx_author_last_name | last_name, first_name | B-tree | Author lookup |
-| member | idx_member_email | email | B-tree | Login/authentication |
-| book_copy | idx_copy_availability | availability_status | B-tree | Filter available books |
-| book_copy | idx_copy_book_branch | book_id, branch_id | Composite | Branch inventory |
-| loan | idx_loan_overdue | due_date, status | Composite | Overdue report |
-| loan | idx_loan_member | member_id | B-tree | Member history |
-
-## Appendix C: Sample Query Library
-
-Refer to Section 8.2 for comprehensive test queries. Key queries include:
-
-1. Book search by title/author/ISBN
-2. Availability check across branches
-3. Member borrowing history
-4. Overdue loan identification
-5. Collection statistics by subject
-6. Financial reports (revenue, outstanding fines)
-7. Popular books (most borrowed)
-8. Branch performance metrics
 
 ---
