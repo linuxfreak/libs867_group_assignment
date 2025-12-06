@@ -276,7 +276,7 @@ The system implements a **normalized relational database** following Third Norma
 
 ### 4.2 Entity Relationship Diagram
 
-![[ERD.png]]
+![](https://raw.githubusercontent.com/linuxfreak/libs867_group_assignment/b0bb824ca66ca305b35283e570ab2aa3eeb0f768/ERD.png)
 
 ### 4.3 Cardinality Summary
 
@@ -1040,7 +1040,6 @@ Reflects Nigerian library membership structures with educational and institution
 ```sql
 ENUM('Cash', 'Credit Card', 'Debit Card', 'Mobile Money', 'Bank Transfer', 'Cheque', 'Online Payment')
 ```
-**Mobile Money** inclusion reflects prevalent Nigerian payment ecosystem (e.g., Paga, OPay).
 
 ---
 <div style="page-break-after: always;"></div>
