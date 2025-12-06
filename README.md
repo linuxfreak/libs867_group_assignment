@@ -24,7 +24,7 @@ The database for this assignment is hosting on a cloud MySQL instance and can be
 
 	- Host: furthermore-mysql-furthermore.f.aivencloud.com
 	- User: group_four
-	- ⁠⁠Password: Driver-Rear-Score7
+	- ⁠⁠Password: **********
 	- Port: 20426
 	- Item⁠SSL Mode: REQUIRED
 
